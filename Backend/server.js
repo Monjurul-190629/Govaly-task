@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 
+
+
 // load environment variables from .env
 dotenv.config();
 
@@ -19,6 +21,14 @@ app.use(cors());
 
 // Enable incoming json requests
 app.use(express.json());
+
+
+// For MongoDB
+const { connectDB } = require('./config/db')
+connectDB();
+
+
+
 
 
 // default for checking
