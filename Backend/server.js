@@ -4,8 +4,6 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 
-
-
 // load environment variables from .env
 dotenv.config();
 
@@ -28,6 +26,12 @@ const { connectDB } = require('./config/db')
 connectDB();
 
 
+
+// Modules 
+const productRoutes = require('./routes/productRoutes');
+
+// routes
+app.use('/api', productRoutes); 
 
 
 
