@@ -44,7 +44,7 @@ app.use('/api', sslcommerzRoutes);
 app.use('/api', UserRoutes)
 
 // Sample success, fail, and cancel routes
-app.use('/api/payment', sslcommerzRoutes);
+app.use('/api', sslcommerzRoutes);
 
 
 // default for checking

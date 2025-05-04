@@ -22,10 +22,10 @@ const initPayment = async (req, res) => {
             total_amount: product.price,
             currency: 'BDT',
             tran_id: transaction_id,
-            success_url: success_url || `https://govaly-task.vercel.app/payment-success/${tran_id}`,
-            fail_url: fail_url || 'https://govaly-task.vercel.app/payment-fail',
-            cancel_url: cancel_url || 'https://govaly-task.vercel.app/payment-fail',
-            ipn_url: 'http://localhost:5000/api/payment/ipn',
+            success_url: success_url || `https://govaly-task-production.up.railway.app/api/success?tran_id=${transaction_id}`,
+            fail_url: fail_url || 'https://govaly-task-production.up.railway.app/api/fail',
+            cancel_url: cancel_url || 'https://govaly-task-production.up.railway.app/api/payment/cancel',
+            ipn_url: 'https://govaly-task-production.up.railway.app/api/payment/ipn',
             shipping_method: 'Courier',
             product_name: product.name,
             product_category: product.type,
@@ -96,7 +96,7 @@ const handleFail = (req, res) => {
 
 //  CANCEL HANDLER
 const handleCancel = (req, res) => {
-    res.redirect('https://govaly-task.vercel.app/payment-cancel');
+    res.redirect('http://localhost:3000/payment-cancel');
 };
 
 //  IPN HANDLER
@@ -106,7 +106,7 @@ const handleIPN = (req, res) => {
     res.status(200).send('IPN received');
 };
 
-// Export
+// Exports
 module.exports = {
     initPayment,
     handleSuccess,
