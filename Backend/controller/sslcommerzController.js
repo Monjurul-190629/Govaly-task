@@ -16,7 +16,7 @@ const initPayment = async (req, res) => {
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
         const transaction_id = new ObjectId().toString();
-        const coin = parseInt(product.price / 20);
+        const coin = parseInt(product.price * 10 / 100);
 
         const data = {
             total_amount: product.price,
@@ -82,7 +82,7 @@ const handleSuccess = async (req, res) => {
         await userSuccessCollection.insertOne({ ...user, paidStatus: true, movedAt: new Date() });
         await userCollection.deleteOne({ tran_id });
 
-        res.redirect(`https://govaly-task.vercel.app/payment-success/${tran_id}`);
+        res.redirect(`http://localhost:3000/payment-success/${tran_id}`);
     } catch (error) {
         console.error('Success handler error:', error.message);
         res.status(500).json({ message: "Payment success processing failed", error: error.message });
@@ -91,7 +91,7 @@ const handleSuccess = async (req, res) => {
 
 //  FAIL HANDLER
 const handleFail = (req, res) => {
-    res.redirect('https://govaly-task.vercel.app/payment-fail');
+    res.redirect('http://localhost:3000/payment-fail');
 };
 
 //  CANCEL HANDLER
