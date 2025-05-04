@@ -3,11 +3,37 @@
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.6,
+            ease: 'easeOut',
+            when: 'beforeChildren',
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const rowVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            type: 'spring',
+            stiffness: 100
+        }
+    }
+};
 
 const CartPage = () => {
     const [bookedProducts, setBookedProducts] = useState([]);
 
-    // Fetch the booked products on mount
     useEffect(() => {
         const fetchBookedProducts = async () => {
             try {
@@ -18,9 +44,8 @@ const CartPage = () => {
             }
         };
         fetchBookedProducts();
-    }, []); // Dependency array empty: fetch only once when the component mounts.
+    }, []);
 
-    // Handle product removal
     const handleRemove = useCallback(async (id) => {
         const result = await Swal.fire({
             title: "Are you sure?",
@@ -36,36 +61,31 @@ const CartPage = () => {
             try {
                 await axios.delete(`https://govaly-task-production.up.railway.app/api/book-product/${id}`);
                 setBookedProducts((prev) => prev.filter((product) => product._id !== id));
-                Swal.fire({
-                    title: "Removed!",
-                    text: "Your product has been removed.",
-                    icon: "success"
-                });
+                Swal.fire("Removed!", "Your product has been removed.", "success");
             } catch (error) {
                 console.error('Error removing product:', error);
-                Swal.fire({
-                    title: "Error!",
-                    text: "There was an error removing the product.",
-                    icon: "error"
-                });
+                Swal.fire("Error!", "There was an error removing the product.", "error");
             }
         }
-    }, []); // No dependency array here; `handleRemove` doesn't depend on any state
+    }, []);
 
-    // Memoize rendered rows for better performance
     const renderedRows = useMemo(() => {
         if (bookedProducts.length === 0) {
             return (
-                <tr>
+                <motion.tr variants={rowVariants}>
                     <td colSpan="5" className="text-center p-4 text-gray-500">
                         No products booked yet.
                     </td>
-                </tr>
+                </motion.tr>
             );
         }
 
         return bookedProducts.map((product) => (
-            <tr key={product._id} className="hover:bg-gray-50">
+            <motion.tr
+                key={product._id}
+                variants={rowVariants}
+                className="hover:bg-gray-100 transition-colors duration-200"
+            >
                 <td className="p-3 border-b">{product.name}</td>
                 <td className="p-3 border-b">{product.type}</td>
                 <td className="p-3 border-b">{product.price} tk</td>
@@ -73,20 +93,33 @@ const CartPage = () => {
                 <td className="p-3 border-b">
                     <button
                         onClick={() => handleRemove(product._id)}
-                        className="bg-pink-500 text-white px-3 py-1 rounded hover:bg-pink-600 transition duration-200"
+                        className="bg-pink-500 text-white px-3 py-1 rounded hover:bg-pink-600 transition-transform duration-200 hover:scale-105"
                     >
                         Remove
                     </button>
                 </td>
-            </tr>
+            </motion.tr>
         ));
-    }, [bookedProducts, handleRemove]); // Optimized dependency for `renderedRows`
+    }, [bookedProducts, handleRemove]);
 
     return (
-        <div className="max-w-6xl mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-6 text-center text-gray-700">Bookmarked Products</h2>
-            <div className="overflow-x-auto">
-                <table className="w-full text-left border border-gray-300 rounded-md">
+        <motion.div
+            className="max-w-6xl mx-auto p-4 py-10"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+        >
+            <motion.h2
+                className="text-3xl font-bold mb-6 text-center text-gray-700"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                Bookmarked Products
+            </motion.h2>
+
+            <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                <motion.table className="w-full text-left" variants={containerVariants}>
                     <thead className="bg-gray-100">
                         <tr>
                             <th className="p-3 border-b">Name</th>
@@ -96,12 +129,12 @@ const CartPage = () => {
                             <th className="p-3 border-b">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <motion.tbody variants={containerVariants}>
                         {renderedRows}
-                    </tbody>
-                </table>
+                    </motion.tbody>
+                </motion.table>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

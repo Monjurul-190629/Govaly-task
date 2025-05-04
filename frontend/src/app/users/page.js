@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect, useMemo } from 'react';
 import getUsers from '@/lib/getUsers';
+import { Users, Phone, MapPin, Coins } from 'lucide-react';
 
 const PaidUsers = () => {
     const [users, setUsers] = useState([]);  // To hold fetched user data
@@ -28,19 +29,37 @@ const PaidUsers = () => {
 
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                        <thead className="bg-gradient-to-r from-purple-700 to-pink-800 text-white">
                             <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Name</th>
-                                <th scope="col" className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Phone</th>
-                                <th scope="col" className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">Coins</th>
+                                <th scope="col" className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                    <span className="flex items-center gap-2">
+                                        <Users className='w-4 h-4'/><span>Name</span>
+                                    </span>
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                    <span className="flex items-center gap-2">
+                                        <Phone className="w-4 h-4" /> Phone
+                                    </span>
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                    <span className="flex items-center gap-2">
+                                        <MapPin className="w-4 h-4" /> Address
+                                    </span>
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                    <span className="flex items-center gap-2">
+                                        <Coins className="w-4 h-4" /> Coins
+                                    </span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {memoizedUsers.length > 0 ? (
                                 memoizedUsers.map((user) => (
-                                    <tr key = {user._id} className="hover:bg-gray-50 transition">
+                                    <tr key={user._id} className="hover:bg-gray-50 transition">
                                         <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.phone}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.address}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.coin}</td>
                                     </tr>
                                 ))
