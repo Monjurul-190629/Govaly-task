@@ -29,10 +29,13 @@ connectDB();
 
 // Modules 
 const productRoutes = require('./routes/productRoutes');
+const BookedRoutes = require('./routes/BookedRoutes')
+const getBookedProduct = require('./routes/getBookedProduct')
 
 // routes
 app.use('/api', productRoutes); 
-
+app.use('/api', BookedRoutes);
+app.use('/api', getBookedProduct)
 
 
 // default for checking
