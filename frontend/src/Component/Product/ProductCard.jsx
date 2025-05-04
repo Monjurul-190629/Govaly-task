@@ -3,31 +3,29 @@ import Link from 'next/link';
 import React from 'react';
 
 const ProductCard = ({ product }) => {
-    const { image, name, price, description, type } = product;
-
+    const { _id, image, name, price, description, type } = product;
+    const userId = "123456789"; // Replace with actual user ID when integrating auth
 
     const handleBooking = async () => {
         try {
             const bookingPayload = {
-                productId: product._id,
-                userId: "123456789", // Replace with real user ID if logged in
-                name: product.name,
-                price: product.price,
-                type: product.type,
-                description: product.description,
-                image: product.image,
+                productId: _id,
+                userId,
+                name,
+                price,
+                type,
+                description,
+                image,
             };
-    
+
             const result = await axios.post('http://localhost:5000/api/book-product', bookingPayload);
             console.log('Booking success:', result.data);
             alert('Product booked successfully!');
         } catch (error) {
-            console.error('Booking error:', error.response?.data || error.message);
+            console.error('Booking error:', error?.response?.data || error.message);
             alert('Failed to book product.');
         }
     };
-    
-    
 
     return (
         <div className="max-w-sm mx-auto bg-pink-200 p-5 w-[340px] rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105">
@@ -35,6 +33,7 @@ const ProductCard = ({ product }) => {
                 <img
                     src={image}
                     alt={name}
+                    loading="lazy"
                     className="w-full h-56 object-cover rounded-xl"
                 />
             </div>
@@ -47,7 +46,7 @@ const ProductCard = ({ product }) => {
                 </div>
                 <div className="flex justify-between mt-4 gap-4">
                     <Link
-                        href={`/product/${product._id}`}
+                        href={`/product/${_id}`}
                         className="w-1/2 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors duration-300 text-center"
                     >
                         Order
