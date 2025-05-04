@@ -29,12 +29,9 @@ const CartPage = () => {
     };
     
     
-    
-    
-
     return (
         <div className="max-w-6xl mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-6 text-center">Booked Products</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-600">BookMarked Products</h2>
             <div className="overflow-x-auto">
                 <table className="w-full text-left border border-gray-300 rounded-md">
                     <thead className="bg-gray-100">
@@ -54,6 +51,7 @@ const CartPage = () => {
                                 <td className="p-3 border-b">{product.price} tk</td>
                                 <td className="p-3 border-b">{product.description}</td>
                                 <td className="p-3 border-b">
+                                    
                                     <button
                                         onClick={() => handleRemove(product._id)}
                                         className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"

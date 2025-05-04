@@ -43,10 +43,8 @@ const ProductPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  
 
-
-  // handle pay function
+  // Handle payment function
   const handlePay = async (e) => {
     e.preventDefault();
     console.log('Buyer Info:', formData);
@@ -65,13 +63,16 @@ const ProductPage = () => {
 
   if (loading) return <Loading />;
   if (error) return <ErrorPage error={error} />;
-  
-  // destructure
+
+  // Ensure product is available before destructuring
+  if (!product) return <div>Product not found.</div>;
+
+  // Destructure product details
   const { image, name, description, type, price } = product;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gradient-to-br from-gray-50 to-white min-h-screen">
-      <h1 className="text-2xl md:text-4xl font-bold text-center mb-12 text-gray-700">
+      <h1 className="text-2xl md:text-4xl font-bold text-center mb-12 text-gray-600">
         Product Details
       </h1>
 
@@ -96,7 +97,7 @@ const ProductPage = () => {
 
         {/* Buyer Form */}
         <div className="bg-gray-200 rounded-2xl shadow-lg p-6 transition hover:shadow-xl">
-          <h3 className="text-xl font-semibold mb-6 text-gray-800">Buyer Information</h3>
+          <h3 className="text-xl font-semibold mb-6 text-gray-700">Buyer Information</h3>
           <form className="space-y-5" onSubmit={handlePay}>
             <input
               type="text"
