@@ -1,31 +1,51 @@
-"use client";
+'use client'
 
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "@/features/productsSlice";
-import ProductCard from "./ProductCard";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts, setSearchTerm } from '@/features/productsSlice';
+import { selectFilteredProducts } from '@/features/searchTerm';
+import ProductCard from './ProductCard';
+import { MdSearch } from 'react-icons/md';
 
 const ProductList = () => {
     const dispatch = useDispatch();
-    const { products, isLoading, isError, error } = useSelector((state) => state.products);
+    const { isLoading, isError, error, searchTerm } = useSelector((state) => state.products);
+    const filteredProducts = useSelector(selectFilteredProducts);
 
     useEffect(() => {
         dispatch(fetchProducts());
     }, [dispatch]);
 
+    const handleSearchChange = (e) => {
+        dispatch(setSearchTerm(e.target.value));
+    };
+
     if (isLoading) return <p>Loading...</p>;
     if (isError) return <p>Error: {error}</p>;
-    if (!products || products.length === 0) return <p>No products found.</p>;
+    if (!filteredProducts || filteredProducts.length === 0) return <p>No products found.</p>;
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-10 my-12">
-            {products.map((product) => (
-                <div key={product._id} className="flex justify-center">
-                    <ProductCard product={product} />
+        <div className="my-12 px-4">
+            <div className="flex justify-center mb-6">
+                <div className="relative w-full max-w-md">
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        placeholder="Search by type..."
+                        className="w-full pl-10 pr-4 py-2 border border-pink-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 text-pink-900 "
+                    />
+                    <MdSearch className="absolute left-3 top-2.5 h-5 w-5 text-pink-700 text-3xl" />
                 </div>
-            ))}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-10">
+                {filteredProducts.map((product) => (
+                    <div key={product._id} className="flex justify-center">
+                        <ProductCard product={product} />
+                    </div>
+                ))}
+            </div>
         </div>
-
     );
 };
 

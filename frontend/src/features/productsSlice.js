@@ -4,6 +4,7 @@ const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit")
 
 const initialState = {
     products: [],
+    searchTerm: '',
     isLoading: false,
     isError: false,
     error: ''
@@ -18,7 +19,11 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async ()
 const productsSlice = createSlice({
     name: 'products',
     initialState,
-    reducers: {},
+    reducers: {
+        setSearchTerm: (state, action) => {
+            state.searchTerm = action.payload;
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(fetchProducts.pending, (state) => {
             state.isLoading = true
@@ -36,5 +41,5 @@ const productsSlice = createSlice({
     }
 })
 
-
+export const { setSearchTerm } = productsSlice.actions;
 export default productsSlice.reducer;
