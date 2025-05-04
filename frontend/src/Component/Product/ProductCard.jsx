@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Link from 'next/link';
 import React from 'react';
+import Swal from 'sweetalert2';
 
 const ProductCard = ({ product }) => {
     const { _id, image, name, price, description, type } = product;
@@ -19,11 +20,25 @@ const ProductCard = ({ product }) => {
             };
 
             const result = await axios.post('http://localhost:5000/api/book-product', bookingPayload);
-            console.log('Booking success:', result.data);
-            alert('Product booked successfully!');
+
+            Swal.fire({
+                position: "top-center",
+                icon: "success",
+                title: "Successfully added in cart",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+
         } catch (error) {
             console.error('Booking error:', error?.response?.data || error.message);
-            alert('Failed to book product.');
+            Swal.fire({
+                position: "top-center",
+                icon: "error",
+                title: "Failed to booked product",
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     };
 
@@ -47,7 +62,7 @@ const ProductCard = ({ product }) => {
                 <div className="flex justify-between mt-4 gap-4">
                     <Link
                         href={`/product/${_id}`}
-                        className="w-1/2 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors duration-300 text-center"
+                        className="w-1/2 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors duration-300 text-center"
                     >
                         Order
                     </Link>
