@@ -146,7 +146,7 @@ const ProductPage = () => {
             />
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-300"
+              className="w-full cursor-default bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-300"
             >
               Pay Now
             </button>

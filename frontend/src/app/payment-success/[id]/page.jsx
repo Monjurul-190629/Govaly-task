@@ -1,6 +1,7 @@
 'use client';
 
 import getUserById from '@/lib/getUserById';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React from 'react';
 
@@ -41,14 +42,19 @@ const page = async () => {
                         </div>
                     </div>
 
-                    <div className="text-center mt-8">
-                        <button
-                            onClick={() => window.location.href = '/'}
-                            className="px-6 py-3 bg-pink-600 text-white rounded-lg shadow-lg hover:bg-pink-700 transition duration-200"
-                        >
-                            Go to Dashboard
-                        </button>
+                    <div className="flex justify-center mt-12">
+                        <div className="bg-white shadow-xl rounded-lg px-8 py-6 text-center">
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">You're all set!</h2>
+                            <p className="text-gray-600 mb-6">Head back to your dashboard and explore more features.</p>
+                            <Link
+                                href="/"
+                                className="inline-block px-8 py-3 bg-pink-600 text-white font-medium rounded-full shadow-md hover:bg-pink-700 transition duration-300"
+                            >
+                                Go to Dashboard
+                            </Link>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
+
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
@@ -15,12 +16,11 @@ const CartPage = () => {
                 console.error('Error fetching booked products:', error);
             }
         };
-
         fetchBookedProducts();
     }, []);
 
-    const handleRemove = async (id) => {
-        Swal.fire({
+    const handleRemove = useCallback(async (id) => {
+        const result = await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
             icon: "warning",
@@ -28,40 +28,61 @@ const CartPage = () => {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, remove it!"
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                // First, show success message after deletion
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await axios.delete(`http://localhost:5000/api/book-product/${id}`);
+                setBookedProducts((prev) => prev.filter((product) => product._id !== id));
+
                 Swal.fire({
-                    title: "Remove!",
-                    text: "Your file has been Removed.",
+                    title: "Removed!",
+                    text: "Your product has been removed.",
                     icon: "success"
                 });
-
-                try {
-                    // Use DELETE instead of GET
-                    const res = await axios.delete(`http://localhost:5000/api/book-product/${id}`);
-                    console.log('Response from server:', res); // Log the server's response
-
-                    // Update the state to reflect the deletion
-                    setBookedProducts((prev) => prev.filter((product) => product._id !== id));
-                } catch (error) {
-                    console.error('Error removing product:', error);
-                    // Optionally, show an error message using Swal
-                    Swal.fire({
-                        title: "Error!",
-                        text: "There was an error removing the product.",
-                        icon: "error"
-                    });
-                }
+            } catch (error) {
+                console.error('Error removing product:', error);
+                Swal.fire({
+                    title: "Error!",
+                    text: "There was an error removing the product.",
+                    icon: "error"
+                });
             }
-        });
-    };
+        }
+    }, []);
 
+    const renderedRows = useMemo(() => {
+        if (bookedProducts.length === 0) {
+            return (
+                <tr>
+                    <td colSpan="5" className="text-center p-4 text-gray-500">
+                        No products booked yet.
+                    </td>
+                </tr>
+            );
+        }
 
+        return bookedProducts.map((product) => (
+            <tr key={product._id} className="hover:bg-gray-50">
+                <td className="p-3 border-b">{product.name}</td>
+                <td className="p-3 border-b">{product.type}</td>
+                <td className="p-3 border-b">{product.price} tk</td>
+                <td className="p-3 border-b">{product.description}</td>
+                <td className="p-3 border-b">
+                    <button
+                        onClick={() => handleRemove(product._id)}
+                        className="bg-pink-500 text-white px-3 py-1 rounded hover:bg-pink-600 transition duration-200"
+                    >
+                        Remove
+                    </button>
+                </td>
+            </tr>
+        ));
+    }, [bookedProducts, handleRemove]);
 
     return (
         <div className="max-w-6xl mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-6 text-center text-gray-600">BookMarked Products</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-700">Bookmarked Products</h2>
             <div className="overflow-x-auto">
                 <table className="w-full text-left border border-gray-300 rounded-md">
                     <thead className="bg-gray-100">
@@ -74,30 +95,7 @@ const CartPage = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {bookedProducts.map((product) => (
-                            <tr key={product._id} className="hover:bg-gray-50">
-                                <td className="p-3 border-b">{product.name}</td>
-                                <td className="p-3 border-b">{product.type}</td>
-                                <td className="p-3 border-b">{product.price} tk</td>
-                                <td className="p-3 border-b">{product.description}</td>
-                                <td className="p-3 border-b">
-
-                                    <button
-                                        onClick={() => handleRemove(product._id)}
-                                        className="bg-pink-500 text-white px-3 py-1 rounded hover:bg-pink-600"
-                                    >
-                                        Remove
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        {bookedProducts.length === 0 && (
-                            <tr>
-                                <td colSpan="5" className="text-center p-4 text-gray-500">
-                                    No products booked yet.
-                                </td>
-                            </tr>
-                        )}
+                        {renderedRows}
                     </tbody>
                 </table>
             </div>

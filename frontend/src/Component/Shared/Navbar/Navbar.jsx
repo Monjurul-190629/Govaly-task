@@ -9,6 +9,7 @@ import {
     Home,
     LogIn,
     UserPlus,
+    Users
 } from "lucide-react";
 
 const Navbar = () => {
@@ -26,27 +27,27 @@ const Navbar = () => {
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center space-x-6">
-                    <Link href="/" className="flex items-center gap-1 font-bold text-white italic hover:text-blue-300">
+                    <Link href="/" className="flex items-center gap-1 text-white  hover:text-blue-300">
                         <Home className="w-5 h-5" />
                         <span>Home</span>
                     </Link>
-                    <Link href="/order" className="flex items-center gap-1 hover:text-blue-300 italic">
+                    <Link href="/order" className="flex items-center gap-1 hover:text-blue-300 ">
                         <ClipboardList className="w-5 h-5" />
                         <span>Orders</span>
                     </Link>
-                    <Link href="/cart" className="flex items-center gap-1 hover:text-blue-300 italic">
+                    <Link href="/cart" className="flex items-center gap-1 hover:text-blue-300 ">
                         <ShoppingCart className="w-5 h-5" />
                         <span>Cart</span>
                     </Link>
-                    <Link href="/users" className="flex items-center gap-1 hover:text-blue-300 italic">
-                        <ShoppingCart className="w-5 h-5" />
+                    <Link href="/users" className="flex items-center gap-1 hover:text-blue-300 ">
+                        <Users className="w-5 h-5" />
                         <span>Users</span>
                     </Link>
-                    <Link href="/" className="flex items-center gap-1 hover:text-blue-300 italic">
+                    <Link href="/" className="flex items-center gap-1 hover:text-blue-300 ">
                         <LogIn className="w-5 h-5" />
                         <span>Login</span>
                     </Link>
-                    <Link href="/" className="flex items-center gap-1 hover:text-blue-300 italic">
+                    <Link href="/" className="flex items-center gap-1 hover:text-blue-300 ">
                         <UserPlus className="w-5 h-5" />
                         <span>Register</span>
                     </Link>
@@ -61,27 +62,27 @@ const Navbar = () => {
             {/* Mobile Menu */}
             {menuOpen && (
                 <div className="md:hidden mt-2 space-y-4 px-2 pb-4 border-t pt-4">
-                    <Link href="/" className="block flex items-center gap-1 hover:text-blue-300 italic">
+                    <Link href="/" className="block flex items-center gap-1 hover:text-blue-300 ">
                         <Home className="w-5 h-5" />
                         <span>Home</span>
                     </Link>
-                    <Link href="/order" className="block flex items-center gap-1 hover:text-blue-300 italic">
+                    <Link href="/order" className="block flex items-center gap-1 hover:text-blue-300 ">
                         <ClipboardList className="w-5 h-5" />
                         <span>Orders</span>
                     </Link>
-                    <Link href="/cart" className="block flex items-center gap-1 hover:text-blue-300 italic">
+                    <Link href="/cart" className="block flex items-center gap-1 hover:text-blue-300 ">
                         <ShoppingCart className="w-5 h-5" />
                         <span>Cart</span>
                     </Link>
-                    <Link href="/users" className="flex items-center gap-1 hover:text-blue-300 italic">
-                        <ShoppingCart className="w-5 h-5" />
+                    <Link href="/users" className="flex items-center gap-1 hover:text-blue-300 ">
+                        <Users className="w-5 h-5" />
                         <span>Users</span>
                     </Link>
-                    <Link href="/" className="block flex items-center gap-1 hover:text-blue-300 italic">
+                    <Link href="/" className="block flex items-center gap-1 hover:text-blue-300 ">
                         <LogIn className="w-5 h-5" />
                         <span>Login</span>
                     </Link>
-                    <Link href="/" className="block flex items-center gap-1 hover:text-blue-300 italic">
+                    <Link href="/" className="block flex items-center gap-1 hover:text-blue-300 ">
                         <UserPlus className="w-5 h-5" />
                         <span>Register</span>
                     </Link>
