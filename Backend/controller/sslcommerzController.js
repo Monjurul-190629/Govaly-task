@@ -22,10 +22,10 @@ const initPayment = async (req, res) => {
             total_amount: product.price,
             currency: 'BDT',
             tran_id: transaction_id,
-            success_url: success_url || `http://localhost:5000/api/payment/success?tran_id=${transaction_id}`,
-            fail_url: fail_url || 'http://localhost:5000/api/payment/fail',
-            cancel_url: cancel_url || 'http://localhost:5000/api/payment/cancel',
-            ipn_url: 'http://localhost:5000/api/payment/ipn',
+            success_url: success_url || `https://govaly-task.vercel.app/api/payment/success?tran_id=${transaction_id}`,
+            fail_url: fail_url || 'https://govaly-task.vercel.app//api/payment/fail',
+            cancel_url: cancel_url || 'https://govaly-task.vercel.app/api/payment/cancel',
+            ipn_url: 'https://govaly-task.vercel.app/api/payment/ipn',
             shipping_method: 'Courier',
             product_name: product.name,
             product_category: product.type,
@@ -82,7 +82,7 @@ const handleSuccess = async (req, res) => {
         await userSuccessCollection.insertOne({ ...user, paidStatus: true, movedAt: new Date() });
         await userCollection.deleteOne({ tran_id });
 
-        res.redirect(`http://localhost:3000/payment-success/${tran_id}`);
+        res.redirect(`https://govaly-task.vercel.app/payment-success/${tran_id}`);
     } catch (error) {
         console.error('Success handler error:', error.message);
         res.status(500).json({ message: "Payment success processing failed", error: error.message });
@@ -91,12 +91,12 @@ const handleSuccess = async (req, res) => {
 
 //  FAIL HANDLER
 const handleFail = (req, res) => {
-    res.redirect('http://localhost:3000/payment-fail');
+    res.redirect('https://govaly-task.vercel.app/payment-fail');
 };
 
 //  CANCEL HANDLER
 const handleCancel = (req, res) => {
-    res.redirect('http://localhost:3000/payment-cancel');
+    res.redirect('https://govaly-task.vercel.app/payment-cancel');
 };
 
 //  IPN HANDLER
