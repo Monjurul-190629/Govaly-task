@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { XCircle } from 'lucide-react';
 
-const page = () => {
+const CancelPage = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-red-100 to-pink-200 p-6">
       <div className="bg-white shadow-xl rounded-xl p-8 max-w-md w-full text-center">
@@ -27,4 +27,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default CancelPage;

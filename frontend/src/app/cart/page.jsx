@@ -1,24 +1,26 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const CartPage = () => {
     const [bookedProducts, setBookedProducts] = useState([]);
 
+    // Fetch the booked products on mount
     useEffect(() => {
         const fetchBookedProducts = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/book-product');
+                const res = await axios.get('https://govaly-task-production.up.railway.app/api/book-product');
                 setBookedProducts(res.data);
             } catch (error) {
                 console.error('Error fetching booked products:', error);
             }
         };
         fetchBookedProducts();
-    }, []);
+    }, []); // Dependency array empty: fetch only once when the component mounts.
 
+    // Handle product removal
     const handleRemove = useCallback(async (id) => {
         const result = await Swal.fire({
             title: "Are you sure?",
@@ -32,9 +34,8 @@ const CartPage = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:5000/api/book-product/${id}`);
+                await axios.delete(`https://govaly-task-production.up.railway.app/api/book-product/${id}`);
                 setBookedProducts((prev) => prev.filter((product) => product._id !== id));
-
                 Swal.fire({
                     title: "Removed!",
                     text: "Your product has been removed.",
@@ -49,8 +50,9 @@ const CartPage = () => {
                 });
             }
         }
-    }, []);
+    }, []); // No dependency array here; `handleRemove` doesn't depend on any state
 
+    // Memoize rendered rows for better performance
     const renderedRows = useMemo(() => {
         if (bookedProducts.length === 0) {
             return (
@@ -78,7 +80,7 @@ const CartPage = () => {
                 </td>
             </tr>
         ));
-    }, [bookedProducts, handleRemove]);
+    }, [bookedProducts, handleRemove]); // Optimized dependency for `renderedRows`
 
     return (
         <div className="max-w-6xl mx-auto p-4">

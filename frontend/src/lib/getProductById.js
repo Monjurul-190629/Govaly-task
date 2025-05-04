@@ -1,13 +1,26 @@
-const axios = require('axios');  
+import axios from 'axios';
 
-const getProductById = async (id) => { 
+const getProductById = async (id) => {
+    if (!id) {
+        console.error("Invalid product ID provided.");
+        return null;
+    }
+
     try {
-        const result = await axios.get(`http://localhost:5000/api/products/${id}`);
-        return result.data;
+        const { data } = await axios.get(
+            `https://govaly-task-production.up.railway.app/api/products/${id}`,
+            {
+                timeout: 5000, // 5 seconds timeout
+                headers: {
+                    'Accept': 'application/json',
+                },
+            }
+        );
+        return data;
+    } catch (err) {
+        console.error(`Error fetching product by ID (${id}):`, err.message);
+        return null;
     }
-    catch(err) {
-        console.log(`Error: ${err}`);
-    }
-}
+};
 
 export default getProductById;

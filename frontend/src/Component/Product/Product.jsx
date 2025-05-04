@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, setSearchTerm } from '@/features/productsSlice';
 import { selectFilteredProducts } from '@/features/searchTerm';
@@ -12,22 +12,30 @@ import ErrorPage from '@/Error/Error';
 const ProductList = () => {
     const dispatch = useDispatch();
     const { isLoading, isError, error, searchTerm, products } = useSelector((state) => state.products);
+
+    // Memoize filtered products to avoid recalculating on every render
     const filteredProducts = useSelector(selectFilteredProducts);
 
     // Fetch products on initial render
     useEffect(() => {
-        dispatch(fetchProducts());
-    }, [dispatch]);
+        if (!products.length) {  // Fetch products only if they are not already fetched
+            dispatch(fetchProducts());
+        }
+    }, [dispatch, products.length]);
 
     // Handle search input change and update Redux state directly
     const handleSearchChange = (e) => {
-        const newSearchTerm = e.target.value;
-        dispatch(setSearchTerm(newSearchTerm)); // Update the search term in Redux directly
+        dispatch(setSearchTerm(e.target.value));
     };
+
+    // Memoize filtered products to avoid unnecessary recalculations
+    const memoizedFilteredProducts = useMemo(() => {
+        return filteredProducts;
+    }, [filteredProducts]);
 
     if (isLoading) return <Loading />;
     if (isError) return <ErrorPage error={error} />;
-    if (filteredProducts.length === 0) return <p>No products found.</p>;
+    if (memoizedFilteredProducts.length === 0) return <p>No products found.</p>;
 
     return (
         <div className="my-12 px-4">
@@ -44,7 +52,7 @@ const ProductList = () => {
                 </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-10">
-                {filteredProducts.map((product) => (
+                {memoizedFilteredProducts.map((product) => (
                     <div key={product._id} className="flex justify-center">
                         <ProductCard product={product} />
                     </div>

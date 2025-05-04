@@ -1,8 +1,22 @@
+'use client'
+import React, { useState, useEffect, useMemo } from 'react';
 import getUsers from '@/lib/getUsers';
-import React from 'react';
 
-const PaidUsers = async () => {
-    const users = await getUsers();
+const PaidUsers = () => {
+    const [users, setUsers] = useState([]);  // To hold fetched user data
+
+    // Fetch users when component mounts
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const data = await getUsers();
+            setUsers(data);
+        };
+
+        fetchUsers();
+    }, []);  // Empty dependency array means this runs only once after the component mounts
+
+    // Memoize the user data to avoid unnecessary re-renders
+    const memoizedUsers = useMemo(() => users, [users]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-200 py-12 px-4 sm:px-6 lg:px-8">
@@ -22,9 +36,9 @@ const PaidUsers = async () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {users.length > 0 ? (
-                                users.map((user) => (
-                                    <tr key={user._id} className="hover:bg-gray-50 transition">
+                            {memoizedUsers.length > 0 ? (
+                                memoizedUsers.map((user) => (
+                                    <tr key = {user._id} className="hover:bg-gray-50 transition">
                                         <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.phone}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.coin}</td>
@@ -42,5 +56,8 @@ const PaidUsers = async () => {
         </div>
     );
 };
+
+
+
 
 export default PaidUsers;

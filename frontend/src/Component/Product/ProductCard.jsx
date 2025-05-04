@@ -1,13 +1,14 @@
 import axios from 'axios';
 import Link from 'next/link';
-import React from 'react';
+import React, { useCallback } from 'react';
 import Swal from 'sweetalert2';
 
 const ProductCard = ({ product }) => {
     const { _id, image, name, price, description, type } = product;
     const userId = "123456789"; // Replace with actual user ID when integrating auth
 
-    const handleBooking = async () => {
+    // Use useCallback to memoize the booking function and avoid unnecessary re-renders
+    const handleBooking = useCallback(async () => {
         try {
             const bookingPayload = {
                 productId: _id,
@@ -28,8 +29,6 @@ const ProductCard = ({ product }) => {
                 showConfirmButton: false,
                 timer: 1500
             });
-
-
         } catch (error) {
             console.error('Booking error:', error?.response?.data || error.message);
             Swal.fire({
@@ -40,7 +39,7 @@ const ProductCard = ({ product }) => {
                 timer: 1500
             });
         }
-    };
+    }, [_id, userId, name, price, type, description, image]);
 
     return (
         <div className="max-w-sm mx-auto bg-pink-200 p-5 w-[340px] rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105">
