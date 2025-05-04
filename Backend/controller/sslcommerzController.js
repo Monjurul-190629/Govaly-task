@@ -106,6 +106,7 @@ const handleIPN = (req, res) => {
     res.status(200).send('IPN received');
 };
 
+// Export
 module.exports = {
     initPayment,
     handleSuccess,
