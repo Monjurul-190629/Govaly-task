@@ -89,7 +89,7 @@ const handleSuccess = async (req, res) => {
     }
 };
 
-// ❌ FAIL HANDLER
+//  FAIL HANDLER
 const handleFail = (req, res) => {
     res.redirect('http://localhost:3000/payment-fail');
 };
