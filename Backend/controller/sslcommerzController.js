@@ -3,58 +3,113 @@ const { client } = require('../config/db');
 const sslCommerzService = require('../services/sslcommerzService');
 
 const db = client.db("DataBase1");
-const collection = db.collection("Products");
+const productCollection = db.collection("Products");
+const userCollection = db.collection("User");
+const userSuccessCollection = db.collection("User_Success")
 
+// 🟢 INITIATE PAYMENT
 const initPayment = async (req, res) => {
-
-    const user = req.body;
-
-    const product = await collection.findOne({
-        _id: new ObjectId(req.body.productId)
-    })
-    
-
-
-    const data = {
-        total_amount: product.price,
-        currency: 'BDT',
-        tran_id: 'REF123', // Use a unique transaction ID
-        success_url: 'http://localhost:3030/success',
-        fail_url: 'http://localhost:3030/fail',
-        cancel_url: 'http://localhost:3030/cancel',
-        ipn_url: 'http://localhost:3030/ipn',
-        shipping_method: 'Courier',
-        product_name: product.name,
-        product_category: product.type,
-        product_profile: 'general',
-        cus_name: user.name,
-        cus_email: user.email,
-        cus_add1: user.address,
-        cus_add2: user.address,
-        cus_city: 'Dhaka',
-        cus_state: 'Dhaka',
-        cus_postcode: user.postcode,
-        cus_country: 'Bangladesh',
-        cus_phone: user.phone,
-        cus_fax: '01711111111',
-        ship_name: 'Customer Name',
-        ship_add1: 'Dhaka',
-        ship_add2: 'Dhaka',
-        ship_city: 'Dhaka',
-        ship_state: 'Dhaka',
-        ship_postcode: 1000,
-        ship_country: 'Bangladesh',
-    };
-
     try {
+        const { name, email, phone, address, postcode, productId, success_url, fail_url, cancel_url } = req.body;
+
+        const product = await productCollection.findOne({ _id: new ObjectId(productId) });
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+
+        const transaction_id = new ObjectId().toString();
+        const coin = parseInt(product.price / 20);
+
+        const data = {
+            total_amount: product.price,
+            currency: 'BDT',
+            tran_id: transaction_id,
+            success_url: success_url || `http://localhost:5000/api/payment/success?tran_id=${transaction_id}`,
+            fail_url: fail_url || 'http://localhost:5000/api/payment/fail',
+            cancel_url: cancel_url || 'http://localhost:5000/api/payment/cancel',
+            ipn_url: 'http://localhost:5000/api/payment/ipn',
+            shipping_method: 'Courier',
+            product_name: product.name,
+            product_category: product.type,
+            product_profile: 'general',
+            cus_name: name,
+            cus_email: email,
+            cus_add1: address,
+            cus_add2: address,
+            cus_city: 'Dhaka',
+            cus_state: 'Dhaka',
+            cus_postcode: postcode,
+            cus_country: 'Bangladesh',
+            cus_phone: phone,
+            cus_fax: '01711111111',
+            ship_name: name,
+            ship_add1: 'Dhaka',
+            ship_add2: 'Dhaka',
+            ship_city: 'Dhaka',
+            ship_state: 'Dhaka',
+            ship_postcode: 1000,
+            ship_country: 'Bangladesh',
+        };
+
+        await userCollection.insertOne({
+            tran_id: transaction_id,
+            name,
+            email,
+            phone,
+            address,
+            coin,
+            createdAt: new Date(),
+            paidStatus: false,
+        });
+
         const apiResponse = await sslCommerzService.initPayment(data);
-        const GatewayPageURL = apiResponse.GatewayPageURL;
-        // ✅ Instead of res.redirect:
-        res.status(200).json({ GatewayPageURL });
-        console.log('Redirecting to: ', GatewayPageURL);
+        res.status(200).json({ GatewayPageURL: apiResponse.GatewayPageURL });
     } catch (error) {
-        res.status(500).json({ message: 'Error initializing payment: ' + error.message });
+        console.error('Payment init error:', error.message);
+        res.status(500).json({ message: 'Payment initialization failed', error: error.message });
     }
 };
 
-module.exports = { initPayment };
+// ✅ SUCCESS HANDLER (GET or POST)
+const handleSuccess = async (req, res) => {
+    const tran_id = req.query.tran_id || req.body.tran_id;
+
+    if (!tran_id) return res.status(400).json({ message: 'Transaction ID missing' });
+
+    try {
+        const user = await userCollection.findOne({ tran_id });
+        if (!user) return res.status(404).json({ message: "Transaction not found" });
+
+        await userCollection.updateOne({ tran_id }, { $set: { paidStatus: true } });
+        await userSuccessCollection.insertOne({ ...user, paidStatus: true, movedAt: new Date() });
+        await userCollection.deleteOne({ tran_id });
+
+        res.redirect(`http://localhost:3000/payment-success/${tran_id}`);
+    } catch (error) {
+        console.error('Success handler error:', error.message);
+        res.status(500).json({ message: "Payment success processing failed", error: error.message });
+    }
+};
+
+// ❌ FAIL HANDLER
+const handleFail = (req, res) => {
+    res.redirect('http://localhost:3000/payment-fail');
+};
+
+// ❌ CANCEL HANDLER
+const handleCancel = (req, res) => {
+    res.redirect('http://localhost:3000/payment-cancel');
+};
+
+// 🔁 IPN HANDLER
+const handleIPN = (req, res) => {
+    console.log('IPN Received:', req.body);
+    // You can verify transaction data here (optional)
+    res.status(200).send('IPN received');
+};
+
+module.exports = {
+    initPayment,
+    handleSuccess,
+    handleFail,
+    handleCancel,
+    handleIPN,
+};

@@ -33,6 +33,7 @@ const BookedRoutes = require('./routes/BookedRoutes');
 const getBookedProduct = require('./routes/getBookedProduct');
 const deletedBooked = require('./routes/deletedBooked');
 const sslcommerzRoutes = require('./routes/sslcommerzRoutes');
+const UserRoutes = require('./routes/UserRoutes');
 
 // routes
 app.use('/api', productRoutes); 
@@ -40,15 +41,10 @@ app.use('/api', BookedRoutes);
 app.use('/api', getBookedProduct)
 app.use('/api', deletedBooked)
 app.use('/api', sslcommerzRoutes);
+app.use('/api', UserRoutes)
 
 // Sample success, fail, and cancel routes
-app.get('/success', (req, res) => res.send('Payment Successful'));
-app.get('/fail', (req, res) => res.send('Payment Failed'));
-app.get('/cancel', (req, res) => res.send('Payment Canceled'));
-app.post('/ipn', (req, res) => {
-    console.log(req.body);  // Handle IPN (Instant Payment Notification)
-    res.send('OK');
-});
+app.use('/api/payment', sslcommerzRoutes);
 
 
 // default for checking
