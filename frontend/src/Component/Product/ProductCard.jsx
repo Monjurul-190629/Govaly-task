@@ -10,8 +10,12 @@ const ProductCard = ({ product }) => {
         try {
             const bookingPayload = {
                 productId: product._id,
-                userId: "123456789", // Replace this with actual user ID if available (e.g., from auth)
-                ...product // optionally include more data if needed
+                userId: "123456789", // Replace with real user ID if logged in
+                name: product.name,
+                price: product.price,
+                type: product.type,
+                description: product.description,
+                image: product.image,
             };
     
             const result = await axios.post('http://localhost:5000/api/book-product', bookingPayload);
@@ -22,6 +26,7 @@ const ProductCard = ({ product }) => {
             alert('Failed to book product.');
         }
     };
+    
     
 
     return (
