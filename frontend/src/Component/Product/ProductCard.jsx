@@ -1,7 +1,28 @@
+import axios from 'axios';
+import Link from 'next/link';
 import React from 'react';
 
 const ProductCard = ({ product }) => {
     const { image, name, price, description, type } = product;
+
+
+    const handleBooking = async () => {
+        try {
+            const bookingPayload = {
+                productId: product._id,
+                userId: "123456789", // Replace this with actual user ID if available (e.g., from auth)
+                ...product // optionally include more data if needed
+            };
+    
+            const result = await axios.post('http://localhost:5000/api/book-product', bookingPayload);
+            console.log('Booking success:', result.data);
+            alert('Product booked successfully!');
+        } catch (error) {
+            console.error('Booking error:', error.response?.data || error.message);
+            alert('Failed to book product.');
+        }
+    };
+    
 
     return (
         <div className="max-w-sm mx-auto bg-pink-200 p-5 w-[340px] rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105">
@@ -20,14 +41,14 @@ const ProductCard = ({ product }) => {
                     <span className="text-md text-gray-500 font-semibold">{type}</span>
                 </div>
                 <div className="flex justify-between mt-4 gap-4">
-                    <button
-                        onClick={() => alert('Order clicked')}
-                        className="w-1/2 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300"
+                    <Link
+                        href={`/product/${product._id}`}
+                        className="w-1/2 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors duration-300 text-center"
                     >
                         Order
-                    </button>
+                    </Link>
                     <button
-                        onClick={() => alert('Add to Bookmark clicked')}
+                        onClick={handleBooking}
                         className="w-1/2 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors duration-300"
                     >
                         Bookmark
