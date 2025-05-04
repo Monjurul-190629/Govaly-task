@@ -38,6 +38,10 @@ const Navbar = () => {
                         <ShoppingCart className="w-5 h-5" />
                         <span>Cart</span>
                     </Link>
+                    <Link href="/users" className="flex items-center gap-1 hover:text-blue-300 italic">
+                        <ShoppingCart className="w-5 h-5" />
+                        <span>Users</span>
+                    </Link>
                     <Link href="/" className="flex items-center gap-1 hover:text-blue-300 italic">
                         <LogIn className="w-5 h-5" />
                         <span>Login</span>
@@ -68,6 +72,10 @@ const Navbar = () => {
                     <Link href="/cart" className="block flex items-center gap-1 hover:text-blue-300 italic">
                         <ShoppingCart className="w-5 h-5" />
                         <span>Cart</span>
+                    </Link>
+                    <Link href="/users" className="flex items-center gap-1 hover:text-blue-300 italic">
+                        <ShoppingCart className="w-5 h-5" />
+                        <span>Users</span>
                     </Link>
                     <Link href="/" className="block flex items-center gap-1 hover:text-blue-300 italic">
                         <LogIn className="w-5 h-5" />
