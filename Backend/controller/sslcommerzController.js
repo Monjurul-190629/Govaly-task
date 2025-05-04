@@ -7,7 +7,7 @@ const productCollection = db.collection("Products");
 const userCollection = db.collection("User");
 const userSuccessCollection = db.collection("User_Success")
 
-// 🟢 INITIATE PAYMENT
+//  INITIATE PAYMENT
 const initPayment = async (req, res) => {
     try {
         const { name, email, phone, address, postcode, productId, success_url, fail_url, cancel_url } = req.body;
@@ -68,7 +68,7 @@ const initPayment = async (req, res) => {
     }
 };
 
-// ✅ SUCCESS HANDLER (GET or POST)
+// SUCCESS HANDLER (GET or POST)
 const handleSuccess = async (req, res) => {
     const tran_id = req.query.tran_id || req.body.tran_id;
 
@@ -94,12 +94,12 @@ const handleFail = (req, res) => {
     res.redirect('http://localhost:3000/payment-fail');
 };
 
-// ❌ CANCEL HANDLER
+//  CANCEL HANDLER
 const handleCancel = (req, res) => {
     res.redirect('http://localhost:3000/payment-cancel');
 };
 
-// 🔁 IPN HANDLER
+//  IPN HANDLER
 const handleIPN = (req, res) => {
     console.log('IPN Received:', req.body);
     // You can verify transaction data here (optional)
