@@ -80,16 +80,47 @@ const handleSuccess = async (req, res) => {
         const user = await userCollection.findOne({ tran_id });
         if (!user) return res.status(404).json({ message: "Transaction not found" });
 
+        // Mark user as paid in temporary collection
         await userCollection.updateOne({ tran_id }, { $set: { paidStatus: true } });
-        await userSuccessCollection.insertOne({ ...user, paidStatus: true, movedAt: new Date() });
+
+        // Check if user with same phone exists in User_Success
+        const existingSuccessUser = await userSuccessCollection.findOne({ phone: user.phone });
+
+        if (existingSuccessUser) {
+            // If exists, update tran_id and add coin
+            const updatedCoin = (existingSuccessUser.coin || 0) + (user.coin || 0);
+
+            await userSuccessCollection.updateOne(
+                { phone: user.phone },
+                {
+                    $set: {
+                        tran_id: tran_id,
+                        coin: updatedCoin,
+                        updatedAt: new Date(),
+                        paidStatus: true
+                    }
+                }
+            );
+        } else {
+            // Insert as new record if phone doesn't exist
+            await userSuccessCollection.insertOne({
+                ...user,
+                paidStatus: true,
+                movedAt: new Date()
+            });
+        }
+
+        // Remove from temporary collection
         await userCollection.deleteOne({ tran_id });
 
+        // Redirect to success page with phone (if you want)
         res.redirect(`https://govaly-task.vercel.app/payment-success/${tran_id}`);
     } catch (error) {
         console.error('Success handler error:', error.message);
         res.status(500).json({ message: "Payment success processing failed", error: error.message });
     }
 };
+
 
 //  FAIL HANDLER
 const handleFail = (req, res) => {
