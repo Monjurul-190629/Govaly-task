@@ -97,6 +97,7 @@ const handleSuccess = async (req, res) => {
         } else {
             // Insert new user to success collection
             await userSuccessCollection.insertOne({
+                tran_id: user.tran_id,
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
