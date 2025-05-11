@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { getAllUsers } = require('../controller/getUser');
-const {getUserByTranId} = require('../controller/getUserByTranId');
+const { getUserByPhone } = require('../controller/getUserByPhone');
 
 
 router.get('/users', getAllUsers); 
-router.get('/users/:id', getUserByTranId);
+router.get('/users/:phone', getUserByPhone);
 
 
 

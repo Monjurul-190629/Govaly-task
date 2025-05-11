@@ -106,11 +106,9 @@ const handleSuccess = async (req, res) => {
             });
         }
 
-        // Remove the temporary entry
-        await userCollection.deleteOne({ tran_id });
 
         // Redirect to frontend success page
-        res.redirect(`https://govaly-task.vercel.app/payment-success/${tran_id}`);
+        res.redirect(`https://govaly-task.vercel.app/payment-success/${phone}`);
     } catch (error) {
         console.error('Success handler error:', error.message);
         res.status(500).json({ message: "Payment success processing failed", error: error.message });
