@@ -24,7 +24,7 @@ const initPayment = async (req, res) => {
             total_amount: product.price,
             currency: 'BDT',
             tran_id: transaction_id,
-            success_url: success_url || `https://govaly-task-production.up.railway.app/api/success?tran_id=${transaction_id}`,
+            success_url: success_url || `https://govaly-task-production.up.railway.app/api/success?phone=${phone}`,
             fail_url: fail_url || 'https://govaly-task-production.up.railway.app/api/fail',
             cancel_url: cancel_url || 'https://govaly-task-production.up.railway.app/api/cancel',
             ipn_url: 'https://govaly-task-production.up.railway.app/api/payment/ipn',
