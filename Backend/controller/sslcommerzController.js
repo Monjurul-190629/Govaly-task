@@ -16,9 +16,9 @@ const initPayment = async (req, res) => {
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
         const transaction_id = new ObjectId().toString();
-        const coin = parseInt(product.price * 10 / 100);
+        const coin = parseInt(product.price * 10 /100);
 
-
+        
 
         const data = {
             total_amount: product.price,
@@ -80,45 +80,16 @@ const handleSuccess = async (req, res) => {
         const user = await userCollection.findOne({ tran_id });
         if (!user) return res.status(404).json({ message: "Transaction not found" });
 
-        // Mark the transaction as paid
         await userCollection.updateOne({ tran_id }, { $set: { paidStatus: true } });
-
-        // Check if the user already exists in the success collection
-        const existingSuccessUser = await userSuccessCollection.findOne({ phone: user.phone });
-
-        if (existingSuccessUser) {
-            // Update the existing user's coin
-            const newCoinTotal = (existingSuccessUser.coin || 0) + (user.coin || 0);
-
-            await userSuccessCollection.updateOne(
-                { phone: user.phone },
-                { $set: { coin: newCoinTotal } }
-            );
-        } else {
-            // Insert new user to success collection
-            await userSuccessCollection.insertOne({
-                tran_id: user.tran_id,
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                address: user.address,
-                coin: user.coin || 0,
-                paidStatus: true,
-                movedAt: new Date()
-            });
-        }
-
-        // Clean up the temporary collection
+        await userSuccessCollection.insertOne({ ...user, paidStatus: true, movedAt: new Date() });
         await userCollection.deleteOne({ tran_id });
 
-        // Redirect to frontend payment success page
         res.redirect(`https://govaly-task.vercel.app/payment-success/${tran_id}`);
     } catch (error) {
         console.error('Success handler error:', error.message);
         res.status(500).json({ message: "Payment success processing failed", error: error.message });
     }
 };
-
 
 //  FAIL HANDLER
 const handleFail = (req, res) => {
