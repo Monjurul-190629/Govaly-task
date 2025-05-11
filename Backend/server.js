@@ -34,6 +34,7 @@ const getBookedProduct = require('./routes/getBookedProduct');
 const deletedBooked = require('./routes/deletedBooked');
 const sslcommerzRoutes = require('./routes/sslcommerzRoutes');
 const UserRoutes = require('./routes/UserRoutes');
+const UserByPhone = require('./routes/UserByPhone');
 
 // routes
 app.use('/api', productRoutes); 
@@ -42,6 +43,7 @@ app.use('/api', getBookedProduct)
 app.use('/api', deletedBooked)
 app.use('/api', sslcommerzRoutes);
 app.use('/api', UserRoutes)
+app.use('/api', UserByPhone)
 
 // Sample success, fail, and cancel routes
 app.use('/api', sslcommerzRoutes);
