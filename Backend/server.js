@@ -15,7 +15,10 @@ const app = express();
 
 
 // Enable cors for all routes
-app.use(cors());
+app.use(cors({
+  origin: 'https://govaly-task.vercel.app', // or use '*' for all origins (not recommended for production)
+  credentials: true,
+}));
 
 // Enable incoming json requests
 app.use(express.json());
